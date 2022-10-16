@@ -1,21 +1,35 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
+  const navigate = useNavigate();
+  const handleSignUpButton = () => {
+    navigate('/signup');
+  };
   return (
     <LoginSection>
       <LoginContainer>
         <LoginForm>
           <LoginHeader>로그인</LoginHeader>
-          <LoginInput type="email" name="email" placeholder="이메일"></LoginInput>
+          <LoginInput
+            type="email"
+            name="email"
+            pattern=".[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+            required
+            title="Ex) wanted@gmail.com"
+            placeholder="이메일을 입력하세요."
+          ></LoginInput>
           <LoginInput
             type="password"
             name="password"
-            minLength={8}
-            placeholder="비밀번호"
+            pattern=".{8,}"
+            required
+            title="8글자 이상 입력해주세요."
+            placeholder="비밀번호를 입력하세요."
           ></LoginInput>
           <ButtonContainer>
-            <SignUpButton>회원가입</SignUpButton>
+            <SignUpButton onClick={handleSignUpButton}>회원가입</SignUpButton>
             <SubmitButton>로그인</SubmitButton>
           </ButtonContainer>
         </LoginForm>
@@ -30,13 +44,6 @@ const LoginSection = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgb(208, 62, 103);
-  background: linear-gradient(
-    41deg,
-    rgba(208, 62, 103, 1) 0%,
-    rgba(126, 37, 157, 1) 50%,
-    rgba(25, 70, 231, 1) 100%
-  );
 `;
 const LoginContainer = styled.article`
   width: 20rem;
@@ -54,7 +61,7 @@ const LoginContainer = styled.article`
 const LoginHeader = styled.h1`
   color: #fff;
   padding-bottom: 2rem;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
 `;
 const LoginInput = styled.input`
   width: 70%;
@@ -79,14 +86,14 @@ const LoginForm = styled.form`
 const ButtonContainer = styled.div`
   display: flex;
   width: 70%;
-  padding-top: 3rem;
+  padding-top: 2rem;
   justify-content: space-between;
 `;
 const SignUpButton = styled.button`
   font-size: 0.8rem;
 `;
 const SubmitButton = styled.button`
-  font-size: 1rem;
+  font-size: 0.8rem;
   padding: 0.5rem 1rem;
   color: #fff;
   background-color: #1a73e8;

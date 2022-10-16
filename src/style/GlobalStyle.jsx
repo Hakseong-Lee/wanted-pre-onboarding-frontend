@@ -7,7 +7,14 @@ const GlobalStyle = createGlobalStyle`
     padding: 0px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   }
-
+  body{
+    background: linear-gradient(
+      40deg,
+      rgba(208, 62, 103, 1) 0%,
+      rgba(126, 37, 157, 1) 50%,
+      rgba(25, 70, 231, 1) 100%
+    );
+  }
   button{
     cursor: pointer;
     outline: none;
