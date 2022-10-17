@@ -69,11 +69,9 @@ function SignUpPage() {
             value={email}
             pattern=".[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
             title="이메일 형식을 확인하세요."
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
+            onChange={(e) => setEmail(e.target.value)}
           ></SignUpInput>
-          <Message>{emailMessage}</Message>
+          {!email ? '' : <Message>{emailMessage}</Message>}
           <Text>비밀번호</Text>
           <SignUpInput
             type="password"
@@ -82,11 +80,9 @@ function SignUpPage() {
             pattern=".{8,}"
             required
             title="8글자 이상 입력해주세요."
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
+            onChange={(e) => setPassword(e.target.value)}
           ></SignUpInput>
-          <Message>{passwordMessage}</Message>
+          {!password ? '' : <Message>{passwordMessage}</Message>}
           <Text>비밀번호 확인</Text>
           <SignUpInput
             type="password"
@@ -95,14 +91,15 @@ function SignUpPage() {
             pattern=".{8,}"
             required
             title="비밀번호가 일치하지 않습니다."
-            onChange={(e) => {
-              setPasswordConfirm(e.target.value);
-            }}
+            onChange={(e) => setPasswordConfirm(e.target.value)}
           ></SignUpInput>
-          <Message>{passwordConfirmMessage}</Message>
-          <SignUpButton className={isValid ? 'valied' : 'disabled'} disabled={!isValid}>
-            회원가입
-          </SignUpButton>
+          {!passwordConfirm ? '' : <Message>{passwordConfirmMessage}</Message>}
+          <ButtonContainer>
+            <LoginButton onClick={() => navigate('/')}>로그인</LoginButton>
+            <SignUpButton className={isValid ? 'valied' : 'disabled'} disabled={!isValid}>
+              회원가입
+            </SignUpButton>
+          </ButtonContainer>
         </SignUpForm>
       </SignUpContainer>
     </SignUpSection>
@@ -167,18 +164,26 @@ const SignUpForm = styled.form`
   flex-direction: column;
   align-items: center;
 `;
+const ButtonContainer = styled.div`
+  display: flex;
+  width: 70%;
+  padding-top: 2rem;
+  justify-content: space-between;
+`;
 const SignUpButton = styled.button`
   font-size: 0.8rem;
-  margin-top: 1.5rem;
   padding: 0.5rem 1rem;
   color: #fff;
   border-radius: 3px;
-  &.valied {
-    background-color: #1a73e8;
-  }
+  background-color: #1a73e8;
   &.disabled {
-    background-color: #1a73e8;
     opacity: 0.3;
   }
+  &.disabled&:hover {
+    cursor: not-allowed;
+  }
+`;
+const LoginButton = styled.button`
+  font-size: 0.8rem;
 `;
 export default SignUpPage;
