@@ -136,8 +136,10 @@ const ButtonContainer = styled.div`
   padding-top: 2rem;
   justify-content: space-between;
 `;
-const SignUpButton = styled.button`
+const SignUpButton = styled.a`
   font-size: 0.8rem;
+  cursor: pointer;
+  padding-top: 0.5rem;
 `;
 const SubmitButton = styled.button`
   font-size: 0.8rem;

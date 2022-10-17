@@ -183,7 +183,9 @@ const SignUpButton = styled.button`
     cursor: not-allowed;
   }
 `;
-const LoginButton = styled.button`
+const LoginButton = styled.a`
   font-size: 0.8rem;
+  cursor: pointer;
+  padding-top: 0.5rem;
 `;
 export default SignUpPage;
