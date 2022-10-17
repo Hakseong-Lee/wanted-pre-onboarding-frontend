@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,15 +11,52 @@ function SignUpPage() {
   const [passwordConfirm, setPasswordConfirm] = useState('');
 
   //오류메시지 state
-  const [emailMessage, setEmailMessage] = useState(false);
-  const [passwordMessage, setPasswordMessage] = useState(false);
-  const [passwordConfirmMessage, setPasswordConfirmMessage] = useState(false);
+  const [emailMessage, setEmailMessage] = useState('');
+  const [passwordMessage, setPasswordMessage] = useState('');
+  const [passwordConfirmMessage, setPasswordConfirmMessage] = useState('');
 
-  // 유효성 검사
+  // 유효성 검사 state
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
   const [isPasswordConfirm, setIsPasswordConfirm] = useState(false);
+  const [isValid, setIsValid] = useState(false);
 
+  // 유효성 검사
+  useEffect(() => {
+    const emailRegex = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
+    const emailValidation = emailRegex.test(email);
+    if (emailValidation) {
+      setIsEmail(true);
+      setEmailMessage('');
+    } else {
+      setIsEmail(false);
+      setEmailMessage('이메일 형식을 확인하세요.');
+    }
+    const passwordValidation = password.length < 8;
+    if (!passwordValidation) {
+      setIsPassword(true);
+      setPasswordMessage('');
+    } else {
+      setIsPassword(false);
+      setPasswordMessage('8글자 이상 입력하세요.');
+    }
+    const passwordConfirmValidation = password !== passwordConfirm;
+    if (!passwordConfirmValidation && password !== '') {
+      setIsPasswordConfirm(true);
+      setPasswordConfirmMessage('');
+    } else {
+      setIsPasswordConfirm(false);
+      setPasswordConfirmMessage('비밀번호가 일치하지 않습니다.');
+    }
+  }, [email, password, passwordConfirm]);
+
+  useEffect(() => {
+    if (isEmail && isPassword && isPasswordConfirm) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  }, [isEmail, isPassword, isPasswordConfirm]);
   return (
     <SignUpSection>
       <SignUpContainer>
@@ -29,26 +66,43 @@ function SignUpPage() {
           <SignUpInput
             type="email"
             name="email"
+            value={email}
             pattern=".[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
             title="이메일 형식을 확인하세요."
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
           ></SignUpInput>
+          <Message>{emailMessage}</Message>
           <Text>비밀번호</Text>
           <SignUpInput
             type="password"
             name="password"
+            value={password}
             pattern=".{8,}"
             required
             title="8글자 이상 입력해주세요."
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
           ></SignUpInput>
+          <Message>{passwordMessage}</Message>
           <Text>비밀번호 확인</Text>
           <SignUpInput
             type="password"
             name="password"
+            value={passwordConfirm}
             pattern=".{8,}"
             required
-            title="8글자 이상 입력해주세요."
+            title="비밀번호가 일치하지 않습니다."
+            onChange={(e) => {
+              setPasswordConfirm(e.target.value);
+            }}
           ></SignUpInput>
-          <SignUpButton>회원가입</SignUpButton>
+          <Message>{passwordConfirmMessage}</Message>
+          <SignUpButton className={isValid ? 'valied' : 'disabled'} disabled={!isValid}>
+            회원가입
+          </SignUpButton>
         </SignUpForm>
       </SignUpContainer>
     </SignUpSection>
@@ -77,23 +131,31 @@ const SignUpContainer = styled.article`
 `;
 const SignUpHeader = styled.h1`
   color: #fff;
-  padding-bottom: 2rem;
+  padding-bottom: 1.5rem;
   font-size: 1.5rem;
 `;
 const Text = styled.p`
   color: #fff;
   padding-bottom: 0.3rem;
   font-size: 0.8rem;
+  margin-top: 1rem;
+  align-self: flex-start;
+  padding-left: 3rem;
+`;
+const Message = styled.span`
+  color: red;
+  text-shadow: none;
+  font-size: 0.8rem;
   align-self: flex-start;
   padding-left: 3rem;
 `;
 const SignUpInput = styled.input`
   width: 70%;
+  margin-bottom: 0.5rem;
   padding: 0.7rem;
   border-radius: 3px;
   background: transparent;
   border: none;
-  margin-bottom: 0.8rem;
   backdrop-filter: blur(5px);
   box-shadow: 4px 4px 60px rgba(0, 0, 0, 0.2);
   color: #fff;
@@ -107,10 +169,16 @@ const SignUpForm = styled.form`
 `;
 const SignUpButton = styled.button`
   font-size: 0.8rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   padding: 0.5rem 1rem;
   color: #fff;
-  background-color: #1a73e8;
   border-radius: 3px;
+  &.valied {
+    background-color: #1a73e8;
+  }
+  &.disabled {
+    background-color: #1a73e8;
+    opacity: 0.3;
+  }
 `;
 export default SignUpPage;
