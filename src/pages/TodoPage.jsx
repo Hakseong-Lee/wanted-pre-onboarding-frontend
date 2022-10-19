@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { IoPencilSharp, IoTrashOutline, IoCheckmarkSharp, IoClose } from 'react-icons/io5';
-import { GetTodosApi, CreateTodosApi, UpdateTodosApi, DeleteTodosApi } from '../components/Apis';
+import { GetTodosApi, CreateTodosApi, UpdateTodosApi, DeleteTodosApi } from '../components/apis';
 
 function TodoPage() {
   // 리스트 state

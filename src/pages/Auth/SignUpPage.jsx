@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { signUpApi } from '../../components/Apis';
+import { signUpApi } from '../../components/apis';
 
 function SignUpPage() {
   const navigate = useNavigate();
