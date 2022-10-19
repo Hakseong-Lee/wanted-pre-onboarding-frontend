@@ -2,7 +2,7 @@
 
 ## :gem: 배포 링크
 
-https://main--taupe-stroopwafel-f7950b.netlify.app/todo
+https://taupe-stroopwafel-f7950b.netlify.app
 
 
 ## :round_pushpin: 프로젝트 실행 방법
