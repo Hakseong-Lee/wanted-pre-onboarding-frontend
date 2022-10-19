@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import GlobalStyle from './style/GlobalStyle';
 import LoginPage from './pages/auth/loginPage';
 import SignUpPage from './pages/auth/signUpPage';
-import TodoPage from './pages/TodoPage';
+import TodoPage from './pages/todoPage';
 
 function App() {
   return (
