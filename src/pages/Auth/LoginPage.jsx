@@ -23,7 +23,11 @@ function LoginPage() {
   const [isPassword, setIsPassword] = useState(false);
   const [isValid, setIsValid] = useState(false);
   //토큰 유무 확인
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      navigate('todo');
+    }
+  }, []);
   // 유효성 검사
   useEffect(() => {
     const emailRegex = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
@@ -60,8 +64,7 @@ function LoginPage() {
     try {
       const res = await signInApi(inputInfo);
       localStorage.setItem('token', res.data.access_token);
-      alert('회원가입에 성공하였습니다!');
-      navigate('/');
+      navigate('/todo');
     } catch (err) {
       alert(err.response.data.message);
     }

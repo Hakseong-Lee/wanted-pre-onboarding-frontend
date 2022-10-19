@@ -1,6 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { IoPencilSharp, IoTrashOutline, IoCheckmarkSharp, IoClose } from 'react-icons/io5';
+import { GetTodosApi, CreateTodosApi, UpdateTodosApi, DeleteTodosApi } from '../components/Apis';
+
 function TodoPage() {
   const [todoList, setTodoList] = useState([]);
   const [todoContent, setTodoContent] = useState('');
@@ -9,93 +12,41 @@ function TodoPage() {
   const [selectedId, setSelectedId] = useState('');
   const inputRef = useRef();
   const modifyRef = useRef();
-  //랜덤 아이디 생성
-  const [randomId, setRandomId] = useState(0);
-  let todoInfo = { id: randomId, todo: todoContent, isCompleted: false, userId: 1 };
-  const ex = todoList.map((info) => (
-    <>
-      {isModify && info.id === selectedId ? (
-        <ModifyContainer>
-          <ModifyInput
-            type="text"
-            name="modifyContent"
-            ref={modifyRef}
-            defaultValue={info.todo}
-            onChange={(e) => {
-              setModifyContent(e.target.value);
-            }}
-          ></ModifyInput>
-          <Button
-            className="confirm"
-            onClick={(e) => {
-              e.preventDefault();
-              const modifiedList = todoList.map((prevList) => {
-                if (prevList.id === info.id) {
-                  prevList.todo = modifyContent;
-                  return prevList;
-                } else {
-                  return prevList;
-                }
-              });
-              setTodoList(modifiedList);
-              setIsModify(false);
-            }}
-          >
-            <IoCheckmarkSharp className="icon" />
-          </Button>
-          <Button
-            className="close"
-            onClick={(e) => {
-              e.preventDefault();
-              setIsModify(false);
-            }}
-          >
-            <IoClose className="icon" />
-          </Button>
-        </ModifyContainer>
-      ) : (
-        <TodoList key={info.id}>
-          <TodoText
-            className={!info.isCompleted ? 'yet' : 'done'}
-            onClick={(e) => {
-              e.preventDefault();
-              const isCompleteList = todoList.map((prevState) => {
-                if (prevState.id === info.id) {
-                  prevState.isCompleted = !prevState.isCompleted;
-                  return prevState;
-                } else {
-                  return prevState;
-                }
-              });
-              setTodoList(isCompleteList);
-            }}
-          >
-            {info.todo}
-          </TodoText>
-          <Button
-            className="modifiy"
-            onClick={(e) => {
-              e.preventDefault();
-              setSelectedId(info.id);
-              setIsModify(true);
-            }}
-          >
-            <IoPencilSharp className="icon" />
-          </Button>
-          <Button
-            className="delete"
-            onClick={(e) => {
-              e.preventDefault();
-              const newList = todoList.filter((e) => e.id !== info.id);
-              setTodoList(newList);
-            }}
-          >
-            <IoTrashOutline className="icon" />
-          </Button>
-        </TodoList>
-      )}
-    </>
-  ));
+  const navigate = useNavigate();
+
+  const getTodos = async () => {
+    try {
+      const res = await GetTodosApi();
+      setTodoList(res.data);
+    } catch (err) {
+      alert(err.response.data.message);
+    }
+  };
+
+  //토큰 유무 확인
+  useEffect(() => {
+    if (!localStorage.getItem('token')) {
+      navigate('/');
+    } else {
+      getTodos();
+    }
+  }, []);
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    const newTodo = { todo: todoContent };
+    try {
+      await CreateTodosApi(newTodo);
+      getTodos();
+      inputRef.current.value = '';
+      setTodoContent('');
+    } catch (err) {
+      alert(err.response.data.message);
+    }
+  };
+  useEffect(() => {
+    getTodos();
+  }, [todoList]);
   return (
     <TodoSection>
       <TodoContainer>
@@ -107,19 +58,100 @@ function TodoPage() {
             ref={inputRef}
             onChange={(e) => setTodoContent(e.target.value)}
           ></TodoInput>
-          <AddButton
-            onClick={(e) => {
-              e.preventDefault();
-              setRandomId(new Date().getTime());
-              setTodoList((list) => [...list, todoInfo]);
-              inputRef.current.value = '';
-              setTodoContent('');
-            }}
-          >
-            +
-          </AddButton>
+          <AddButton onClick={handleAdd}>+</AddButton>
         </TodoForm>
-        <ListContainer>{ex}</ListContainer>
+        <ListContainer>
+          {todoList.length > 0
+            ? todoList.map((info) => (
+                <>
+                  {isModify && info.id === selectedId ? (
+                    <ModifyContainer>
+                      <ModifyInput
+                        type="text"
+                        name="modifyContent"
+                        ref={modifyRef}
+                        defaultValue={info.todo}
+                        onChange={(e) => {
+                          setModifyContent(e.target.value);
+                        }}
+                      ></ModifyInput>
+                      <Button
+                        className="confirm"
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          const modifiedTodo = {
+                            todo: modifyContent,
+                            isCompleted: info.isCompleted,
+                          };
+                          try {
+                            await UpdateTodosApi(info.id, modifiedTodo);
+                            setIsModify(false);
+                          } catch (err) {
+                            alert(err.response.data.message);
+                          }
+                        }}
+                      >
+                        <IoCheckmarkSharp className="icon" />
+                      </Button>
+                      <Button
+                        className="close"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setIsModify(false);
+                        }}
+                      >
+                        <IoClose className="icon" />
+                      </Button>
+                    </ModifyContainer>
+                  ) : (
+                    <TodoList key={info.id}>
+                      <TodoText
+                        className={!info.isCompleted ? 'yet' : 'done'}
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          const isCompleted = {
+                            todo: info.todo,
+                            isCompleted: !info.isCompleted,
+                          };
+                          try {
+                            await UpdateTodosApi(info.id, isCompleted);
+                          } catch (err) {
+                            alert(err.response.data.message);
+                          }
+                        }}
+                      >
+                        {info.todo}
+                      </TodoText>
+                      <Button
+                        className="modifiy"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setSelectedId(info.id);
+                          setModifyContent(info.todo);
+                          setIsModify(true);
+                        }}
+                      >
+                        <IoPencilSharp className="icon" />
+                      </Button>
+                      <Button
+                        className="delete"
+                        onClick={async (e) => {
+                          e.preventDefault();
+                          try {
+                            await DeleteTodosApi(info.id);
+                          } catch (err) {
+                            alert(err.response.data.message);
+                          }
+                        }}
+                      >
+                        <IoTrashOutline className="icon" />
+                      </Button>
+                    </TodoList>
+                  )}
+                </>
+              ))
+            : ''}
+        </ListContainer>
       </TodoContainer>
     </TodoSection>
   );

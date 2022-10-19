@@ -28,7 +28,7 @@ export const GetTodosApi = () => {
 };
 
 export const CreateTodosApi = (data) => {
-  return axios.post(`https://pre-onboarding-selection-task.shop/todos`, data, {
+  return axios.post(`${address}todos`, data, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -37,7 +37,7 @@ export const CreateTodosApi = (data) => {
 };
 
 export const UpdateTodosApi = (todoId, data) => {
-  return axios.put(`https://pre-onboarding-selection-task.shop/todos/${todoId}`, data, {
+  return axios.put(`${address}todos/${todoId}`, data, {
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -45,8 +45,8 @@ export const UpdateTodosApi = (todoId, data) => {
   });
 };
 
-export const DeleteTodosApi = (todoId, data) => {
-  return axios.delete(`https://pre-onboarding-selection-task.shop/todos/${todoId}`, {
+export const DeleteTodosApi = (todoId) => {
+  return axios.delete(`${address}todos/${todoId}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
