@@ -1,4 +1,4 @@
-import { Routes, HashRouter as Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import GlobalStyle from './style/GlobalStyle';
 import LoginPage from './pages/auth/LoginPage';
 import SignUpPage from './pages/auth/SignUpPage';
