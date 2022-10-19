@@ -1,5 +1,10 @@
 # 원티드 프리온보딩 프론트엔드 - 선발 과제
 
+## :gem: 배포 링크
+
+https://main--taupe-stroopwafel-f7950b.netlify.app/todo
+
+
 ## :round_pushpin: 프로젝트 실행 방법
 
 <br>
