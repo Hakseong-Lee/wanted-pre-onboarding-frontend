@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { signInApi } from '../../components/Apis';
 
 function LoginPage() {
   const navigate = useNavigate();
 
-  //이메일, 비밀번호
+  //이메일, 비밀번호 , 로그인 정보
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [inputInfo, setInputInfo] = useState({
+    email: '',
+    password: '',
+  });
 
   //오류메시지 state
   const [emailMessage, setEmailMessage] = useState('');
@@ -17,7 +22,8 @@ function LoginPage() {
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
   const [isValid, setIsValid] = useState(false);
-
+  //토큰 유무 확인
+  useEffect(() => {}, []);
   // 유효성 검사
   useEffect(() => {
     const emailRegex = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
@@ -31,6 +37,7 @@ function LoginPage() {
     }
     const passwordValidation = password.length < 8;
     if (!passwordValidation) {
+      setInputInfo({ email, password });
       setIsPassword(true);
       setPasswordMessage('');
     } else {
@@ -46,6 +53,19 @@ function LoginPage() {
       setIsValid(false);
     }
   }, [isEmail, isPassword]);
+
+  //로그인
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await signInApi(inputInfo);
+      localStorage.setItem('token', res.data.access_token);
+      alert('회원가입에 성공하였습니다!');
+      navigate('/');
+    } catch (err) {
+      alert(err.response.data.message);
+    }
+  };
   return (
     <LoginSection>
       <LoginContainer>
@@ -75,7 +95,11 @@ function LoginPage() {
           {!password ? '' : <Message>{passwordMessage}</Message>}
           <ButtonContainer>
             <SignUpButton onClick={() => navigate('/signup')}>회원가입</SignUpButton>
-            <SubmitButton className={isValid ? 'valied' : 'disabled'} disabled={!isValid}>
+            <SubmitButton
+              onClick={handleSignIn}
+              className={isValid ? 'valied' : 'disabled'}
+              disabled={!isValid}
+            >
               로그인
             </SubmitButton>
           </ButtonContainer>

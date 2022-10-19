@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { signUpApi } from '../../components/Apis';
 
 function SignUpPage() {
   const navigate = useNavigate();
 
-  //이메일, 비밀번호, 비밀번호 확인
+  //이메일, 비밀번호, 비밀번호 확인, 정보
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [inputInfo, setInputInfo] = useState({
+    email: '',
+    password: '',
+  });
 
   //오류메시지 state
   const [emailMessage, setEmailMessage] = useState('');
@@ -53,10 +58,23 @@ function SignUpPage() {
   useEffect(() => {
     if (isEmail && isPassword && isPasswordConfirm) {
       setIsValid(true);
+      setInputInfo({ email, password });
     } else {
       setIsValid(false);
     }
   }, [isEmail, isPassword, isPasswordConfirm]);
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await signUpApi(inputInfo);
+      localStorage.setItem('token', res.data.access_token);
+      alert('회원가입에 성공하였습니다!');
+      navigate('/');
+    } catch (err) {
+      alert(err.response.data.message);
+    }
+  };
   return (
     <SignUpSection>
       <SignUpContainer>
@@ -96,7 +114,11 @@ function SignUpPage() {
           {!passwordConfirm ? '' : <Message>{passwordConfirmMessage}</Message>}
           <ButtonContainer>
             <LoginButton onClick={() => navigate('/')}>로그인</LoginButton>
-            <SignUpButton className={isValid ? 'valied' : 'disabled'} disabled={!isValid}>
+            <SignUpButton
+              onClick={handleSignUp}
+              className={isValid ? 'valied' : 'disabled'}
+              disabled={!isValid}
+            >
               회원가입
             </SignUpButton>
           </ButtonContainer>
