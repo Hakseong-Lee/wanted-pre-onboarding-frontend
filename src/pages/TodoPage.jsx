@@ -5,15 +5,22 @@ import { IoPencilSharp, IoTrashOutline, IoCheckmarkSharp, IoClose } from 'react-
 import { GetTodosApi, CreateTodosApi, UpdateTodosApi, DeleteTodosApi } from '../components/Apis';
 
 function TodoPage() {
+  // 리스트 state
   const [todoList, setTodoList] = useState([]);
   const [todoContent, setTodoContent] = useState('');
+
+  // 리스트 수정 state
   const [modifyContent, setModifyContent] = useState('');
   const [isModify, setIsModify] = useState(false);
+
+  // 선택한 todo state
   const [selectedId, setSelectedId] = useState('');
+
+  // Dom 선택
   const inputRef = useRef();
   const modifyRef = useRef();
-  const navigate = useNavigate();
 
+  // 리스트 불러오기
   const getTodos = async () => {
     try {
       const res = await GetTodosApi();
@@ -23,6 +30,7 @@ function TodoPage() {
     }
   };
 
+  const navigate = useNavigate();
   //토큰 유무 확인
   useEffect(() => {
     if (!localStorage.getItem('token')) {
@@ -32,6 +40,7 @@ function TodoPage() {
     }
   }, []);
 
+  // todo 추가하기
   const handleAdd = async (e) => {
     e.preventDefault();
     const newTodo = { todo: todoContent };
@@ -44,13 +53,23 @@ function TodoPage() {
       alert(err.response.data.message);
     }
   };
+
+  // 리스트 변경시 정보 다시 불러오기
   useEffect(() => {
     getTodos();
   }, [todoList]);
+
+  // 로그아웃
+  const handleLogout = (e) => {
+    e.preventDefault();
+    localStorage.clear();
+    navigate('/');
+  };
   return (
     <TodoSection>
       <TodoContainer>
         <TodoHeader>&#9997; Todo List</TodoHeader>
+        <LogoutBotton onClick={handleLogout}>로그아웃</LogoutBotton>
         <TodoForm>
           <TodoInput
             type="text"
@@ -231,6 +250,19 @@ const AddButton = styled.button`
     filter: brightness(110%);
   }
 `;
+const LogoutBotton = styled.button`
+  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+  color: #fff;
+  border-radius: 3px;
+  position: absolute;
+  top: 2.2rem;
+  right: 2rem;
+  background-color: #999999;
+  &:hover {
+    filter: brightness(90%);
+  }
+`;
 const TodoForm = styled.form`
   width: 100%;
   display: flex;
@@ -251,7 +283,7 @@ const TodoList = styled.div`
     margin-top: 0.6rem;
   }
 `;
-const ModifyContainer = styled.div`
+const ModifyContainer = styled.form`
   width: 100%;
   display: grid;
   align-items: center;

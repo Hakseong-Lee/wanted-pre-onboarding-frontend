@@ -3,7 +3,6 @@ import axios from 'axios';
 const address = `https://pre-onboarding-selection-task.shop/`;
 
 export const signUpApi = (data) => {
-  console.log(data);
   return axios.post(`${address}auth/signup`, data, {
     headers: {
       'Content-Type': 'application/json',

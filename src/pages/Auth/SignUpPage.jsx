@@ -55,6 +55,7 @@ function SignUpPage() {
     }
   }, [email, password, passwordConfirm]);
 
+  // 버튼 활성화
   useEffect(() => {
     if (isEmail && isPassword && isPasswordConfirm) {
       setIsValid(true);
@@ -63,7 +64,14 @@ function SignUpPage() {
       setIsValid(false);
     }
   }, [isEmail, isPassword, isPasswordConfirm]);
-
+  // input 초기화
+  const resetInput = () => {
+    setInputInfo('', '');
+    setEmail('');
+    setPassword('');
+    setPasswordConfirm('');
+  };
+  // 회원가입
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
@@ -72,9 +80,11 @@ function SignUpPage() {
       alert('회원가입에 성공하였습니다!');
       navigate('/');
     } catch (err) {
+      resetInput();
       alert(err.response.data.message);
     }
   };
+
   return (
     <SignUpSection>
       <SignUpContainer>

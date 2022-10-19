@@ -6,6 +6,13 @@ import { signInApi } from '../../components/Apis';
 function LoginPage() {
   const navigate = useNavigate();
 
+  //토큰 유무 확인
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      navigate('todo');
+    }
+  }, []);
+
   //이메일, 비밀번호 , 로그인 정보
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,12 +29,7 @@ function LoginPage() {
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
   const [isValid, setIsValid] = useState(false);
-  //토큰 유무 확인
-  useEffect(() => {
-    if (localStorage.getItem('token')) {
-      navigate('todo');
-    }
-  }, []);
+
   // 유효성 검사
   useEffect(() => {
     const emailRegex = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
@@ -50,6 +52,7 @@ function LoginPage() {
     }
   }, [email, password]);
 
+  //버튼 활성화
   useEffect(() => {
     if (isEmail && isPassword) {
       setIsValid(true);
@@ -69,6 +72,7 @@ function LoginPage() {
       alert(err.response.data.message);
     }
   };
+
   return (
     <LoginSection>
       <LoginContainer>
