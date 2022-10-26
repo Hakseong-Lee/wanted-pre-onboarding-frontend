@@ -123,7 +123,7 @@ function SignUpPage() {
           ></SignUpInput>
           {!passwordConfirm ? '' : <Message>{passwordConfirmMessage}</Message>}
           <ButtonContainer>
-            <LoginButton onClick={() => navigate('/')}>로그인</LoginButton>
+            <LoginButton to="/">로그인</LoginButton>
             <SignUpButton
               onClick={handleSignUp}
               className={isValid ? 'valied' : 'disabled'}
@@ -215,7 +215,7 @@ const SignUpButton = styled.button`
     cursor: not-allowed;
   }
 `;
-const LoginButton = styled.a`
+const LoginButton = styled.link`
   font-size: 0.8rem;
   cursor: pointer;
   padding-top: 0.5rem;

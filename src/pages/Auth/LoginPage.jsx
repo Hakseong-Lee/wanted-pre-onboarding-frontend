@@ -101,7 +101,7 @@ function LoginPage() {
           {!email ? '' : <Message>{emailMessage}</Message>}
           {!password ? '' : <Message>{passwordMessage}</Message>}
           <ButtonContainer>
-            <SignUpButton onClick={() => navigate('/signup')}>회원가입</SignUpButton>
+            <SignUpButton to="/signup">회원가입</SignUpButton>
             <SubmitButton
               onClick={handleSignIn}
               className={isValid ? 'valied' : 'disabled'}
@@ -167,7 +167,7 @@ const ButtonContainer = styled.div`
   padding-top: 2rem;
   justify-content: space-between;
 `;
-const SignUpButton = styled.a`
+const SignUpButton = styled.link`
   font-size: 0.8rem;
   cursor: pointer;
   padding-top: 0.5rem;
